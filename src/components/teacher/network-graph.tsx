@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
+import styles from './network-graph.module.css'
 
 interface Node {
   id: string
@@ -7,11 +8,15 @@ interface Node {
   type: string
   size: number
   color: string
+  x?: number
+  y?: number
+  fx?: number | null
+  fy?: number | null
 }
 
 interface Link {
-  source: string
-  target: string
+  source: string | Node
+  target: string | Node
   value: number
   label?: string
 }
@@ -21,6 +26,13 @@ interface NetworkGraphProps {
     nodes: Node[]
     links: Link[]
   }
+}
+
+interface D3DragEvent {
+  active: boolean
+  subject: Node
+  x: number
+  y: number
 }
 
 export function NetworkGraph({ data }: NetworkGraphProps) {
@@ -40,8 +52,8 @@ export function NetworkGraph({ data }: NetworkGraphProps) {
       .attr("height", height)
 
     // Create simulation
-    const simulation = d3.forceSimulation(data.nodes)
-      .force("link", d3.forceLink(data.links).id((d: any) => d.id).distance(100))
+    const simulation = d3.forceSimulation<Node>(data.nodes)
+      .force("link", d3.forceLink<Node, Link>(data.links).id((d) => d.id).distance(100))
       .force("charge", d3.forceManyBody().strength(-300))
       .force("center", d3.forceCenter(width / 2, height / 2))
 
@@ -52,23 +64,23 @@ export function NetworkGraph({ data }: NetworkGraphProps) {
       .join("line")
       .attr("stroke", "#999")
       .attr("stroke-opacity", 0.6)
-      .attr("stroke-width", (d: any) => Math.sqrt(d.value))
+      .attr("stroke-width", (d: Link) => Math.sqrt(d.value))
 
     // Create nodes
     const node = svg.append("g")
       .selectAll("circle")
       .data(data.nodes)
       .join("circle")
-      .attr("r", (d: any) => d.size)
-      .attr("fill", (d: any) => d.color)
-      .call(drag(simulation) as any)
+      .attr("r", (d: Node) => d.size)
+      .attr("fill", (d: Node) => d.color)
+      .call(drag(simulation) as unknown as (selection: d3.Selection<SVGCircleElement, Node, SVGGElement, unknown>) => void)
 
     // Add labels
     const label = svg.append("g")
       .selectAll("text")
       .data(data.nodes)
       .join("text")
-      .text((d: any) => d.label)
+      .text((d: Node) => d.label)
       .attr("font-size", "12px")
       .attr("text-anchor", "middle")
       .attr("dy", "0.35em")
@@ -76,40 +88,40 @@ export function NetworkGraph({ data }: NetworkGraphProps) {
     // Update positions on each tick
     simulation.on("tick", () => {
       link
-        .attr("x1", (d: any) => d.source.x)
-        .attr("y1", (d: any) => d.source.y)
-        .attr("x2", (d: any) => d.target.x)
-        .attr("y2", (d: any) => d.target.y)
+        .attr("x1", (d: Link) => (d.source as Node).x || 0)
+        .attr("y1", (d: Link) => (d.source as Node).y || 0)
+        .attr("x2", (d: Link) => (d.target as Node).x || 0)
+        .attr("y2", (d: Link) => (d.target as Node).y || 0)
 
       node
-        .attr("cx", (d: any) => d.x)
-        .attr("cy", (d: any) => d.y)
+        .attr("cx", (d: Node) => d.x || 0)
+        .attr("cy", (d: Node) => d.y || 0)
 
       label
-        .attr("x", (d: any) => d.x)
-        .attr("y", (d: any) => d.y)
+        .attr("x", (d: Node) => d.x || 0)
+        .attr("y", (d: Node) => d.y || 0)
     })
 
     // Drag behavior
-    function drag(simulation: d3.Simulation<any, undefined>) {
-      function dragstarted(event: any) {
+    function drag(simulation: d3.Simulation<Node, undefined>) {
+      function dragstarted(event: D3DragEvent) {
         if (!event.active) simulation.alphaTarget(0.3).restart()
         event.subject.fx = event.subject.x
         event.subject.fy = event.subject.y
       }
 
-      function dragged(event: any) {
+      function dragged(event: D3DragEvent) {
         event.subject.fx = event.x
         event.subject.fy = event.y
       }
 
-      function dragended(event: any) {
+      function dragended(event: D3DragEvent) {
         if (!event.active) simulation.alphaTarget(0)
         event.subject.fx = null
         event.subject.fy = null
       }
 
-      return d3.drag()
+      return d3.drag<SVGCircleElement, Node>()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended)
@@ -124,8 +136,7 @@ export function NetworkGraph({ data }: NetworkGraphProps) {
   return (
     <svg
       ref={svgRef}
-      className="w-full h-full"
-      style={{ background: 'transparent' }}
+      className={styles.graph}
     />
   )
 } 

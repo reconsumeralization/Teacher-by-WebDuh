@@ -28,15 +28,13 @@ export function ResourceManager() {
   ])
 
   const addResource = () => {
-    setResources([
-      ...resources,
-      {
-        id: String(resources.length + 1),
-        title: "",
-        type: "file",
-        tags: [],
-      },
-    ])
+    const newResource: Resource = {
+      id: `resource-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      title: '',
+      type: 'file',
+      tags: [],
+    }
+    setResources([...resources, newResource])
   }
 
   const removeResource = (id: string) => {

@@ -2,19 +2,31 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Globe, Link, Maximize2, Minimize2 } from "lucide-react"
+import { Globe, Maximize2, Minimize2 } from "lucide-react"
 import dynamic from "next/dynamic"
+import styles from './embedded-content.module.css'
 
 // Dynamically import visualization libraries
 const ForceGraph2D = dynamic(() => import('react-force-graph-2d'), { ssr: false })
 const NetworkGraph = dynamic(() => import('@/components/teacher/network-graph'), { ssr: false })
 
+interface GraphData {
+  nodes: Array<{
+    id: string
+    [key: string]: unknown
+  }>
+  links: Array<{
+    source: string
+    target: string
+    [key: string]: unknown
+  }>
+}
+
 interface EmbeddedContentProps {
   title: string
   url?: string
   type: 'iframe' | 'graph' | 'chart'
-  data?: any
+  data?: GraphData
   height?: string
 }
 
@@ -34,18 +46,20 @@ export function EmbeddedContent({ title, url, type, data, height = "600px" }: Em
     switch (type) {
       case 'iframe':
         return (
-          <div className="relative w-full" style={{ height }}>
+          <div className={styles.contentContainer} style={{ height }}>
             <iframe
               src={customUrl}
-              className="w-full h-full rounded-md border"
+              className={styles.iframe}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              title={`Embedded content: ${title}`}
             />
-            <div className="absolute top-2 right-2 space-x-2">
+            <div className={styles.controls}>
               <Button
                 variant="secondary"
                 size="icon"
                 onClick={() => setIsFullscreen(!isFullscreen)}
+                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
                 {isFullscreen ? (
                   <Minimize2 className="h-4 w-4" />
@@ -58,13 +72,13 @@ export function EmbeddedContent({ title, url, type, data, height = "600px" }: Em
         )
       case 'graph':
         return (
-          <div className="w-full" style={{ height }}>
+          <div className={styles.contentContainer} style={{ height }}>
             <NetworkGraph data={data} />
           </div>
         )
       case 'chart':
         return (
-          <div className="w-full" style={{ height }}>
+          <div className={styles.contentContainer} style={{ height }}>
             <ForceGraph2D
               graphData={data}
               nodeLabel="id"
@@ -80,7 +94,7 @@ export function EmbeddedContent({ title, url, type, data, height = "600px" }: Em
   }
 
   return (
-    <Card className={isFullscreen ? "fixed inset-0 z-50 m-0 h-screen w-screen" : ""}>
+    <Card className={isFullscreen ? styles.fullscreen : ""}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div className="flex items-center space-x-2">
@@ -92,8 +106,9 @@ export function EmbeddedContent({ title, url, type, data, height = "600px" }: Em
                 value={customUrl}
                 onChange={(e) => setCustomUrl(e.target.value)}
                 className="w-[300px]"
+                aria-label="URL input"
               />
-              <Button type="submit" size="icon">
+              <Button type="submit" size="icon" aria-label="Load URL">
                 <Globe className="h-4 w-4" />
               </Button>
             </form>
