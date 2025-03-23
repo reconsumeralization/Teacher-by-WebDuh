@@ -113,6 +113,7 @@ export function CourseAnnouncements() {
                     setNewAnnouncement({ ...newAnnouncement, content: e.target.value })
                   }
                   placeholder="Enter announcement content"
+                  aria-label="Announcement content"
                 />
               </div>
               <div className="flex items-center space-x-4">
@@ -169,6 +170,7 @@ export function CourseAnnouncements() {
                       variant="ghost"
                       size="icon"
                       onClick={() => togglePin(announcement.id)}
+                      aria-label={announcement.isPinned ? "Unpin announcement" : "Pin announcement"}
                     >
                       <Pin
                         className={`h-4 w-4 ${
@@ -185,6 +187,7 @@ export function CourseAnnouncements() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeAnnouncement(announcement.id)}
+                      aria-label="Delete announcement"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -228,6 +231,7 @@ export function CourseAnnouncements() {
                         variant="ghost"
                         size="icon"
                         onClick={() => togglePin(announcement.id)}
+                        aria-label={announcement.isPinned ? "Unpin announcement" : "Pin announcement"}
                       >
                         <Pin className="h-4 w-4 fill-current" />
                       </Button>
@@ -240,6 +244,7 @@ export function CourseAnnouncements() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeAnnouncement(announcement.id)}
+                        aria-label="Delete announcement"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -275,6 +280,7 @@ export function CourseAnnouncements() {
                         variant="ghost"
                         size="icon"
                         onClick={() => togglePin(announcement.id)}
+                        aria-label={announcement.isPinned ? "Unpin announcement" : "Pin announcement"}
                       >
                         <Pin
                           className={`h-4 w-4 ${
@@ -291,6 +297,7 @@ export function CourseAnnouncements() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeAnnouncement(announcement.id)}
+                        aria-label="Delete announcement"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -193,6 +193,7 @@ export function CourseDiscussions() {
                     setNewDiscussion({ ...newDiscussion, content: e.target.value })
                   }
                   placeholder="Enter discussion content"
+                  aria-label="Discussion content"
                 />
               </div>
               <div className="flex items-center space-x-4">
@@ -249,6 +250,7 @@ export function CourseDiscussions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => toggleLock(discussion.id)}
+                      aria-label={discussion.isLocked ? "Unlock discussion" : "Lock discussion"}
                     >
                       <Lock
                         className={`h-4 w-4 ${
@@ -260,6 +262,7 @@ export function CourseDiscussions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => togglePin(discussion.id)}
+                      aria-label={discussion.isPinned ? "Unpin discussion" : "Pin discussion"}
                     >
                       <MessageSquare
                         className={`h-4 w-4 ${
@@ -276,6 +279,7 @@ export function CourseDiscussions() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeDiscussion(discussion.id)}
+                      aria-label="Delete discussion"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -321,6 +325,7 @@ export function CourseDiscussions() {
                                 onClick={() =>
                                   toggleReport(discussion.id, reply.id)
                                 }
+                                aria-label={reply.isReported ? "Unreport reply" : "Report reply"}
                               >
                                 <Flag
                                   className={`h-4 w-4 ${
@@ -334,6 +339,7 @@ export function CourseDiscussions() {
                                 onClick={() =>
                                   removeReply(discussion.id, reply.id)
                                 }
+                                aria-label="Delete reply"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -364,6 +370,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleLock(discussion.id)}
+                        aria-label={discussion.isLocked ? "Unlock discussion" : "Lock discussion"}
                       >
                         <Lock
                           className={`h-4 w-4 ${
@@ -375,6 +382,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => togglePin(discussion.id)}
+                        aria-label={discussion.isPinned ? "Unpin discussion" : "Pin discussion"}
                       >
                         <MessageSquare className="h-4 w-4 fill-current" />
                       </Button>
@@ -387,6 +395,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeDiscussion(discussion.id)}
+                        aria-label="Delete discussion"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -425,6 +434,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => toggleLock(discussion.id)}
+                        aria-label={discussion.isLocked ? "Unlock discussion" : "Lock discussion"}
                       >
                         <Lock
                           className={`h-4 w-4 ${
@@ -436,6 +446,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => togglePin(discussion.id)}
+                        aria-label={discussion.isPinned ? "Unpin discussion" : "Pin discussion"}
                       >
                         <MessageSquare
                           className={`h-4 w-4 ${
@@ -452,6 +463,7 @@ export function CourseDiscussions() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeDiscussion(discussion.id)}
+                        aria-label="Delete discussion"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -498,6 +510,7 @@ export function CourseDiscussions() {
                                   onClick={() =>
                                     toggleReport(discussion.id, reply.id)
                                   }
+                                  aria-label={reply.isReported ? "Unreport reply" : "Report reply"}
                                 >
                                   <Flag className="h-4 w-4 fill-current" />
                                 </Button>
@@ -507,6 +520,7 @@ export function CourseDiscussions() {
                                   onClick={() =>
                                     removeReply(discussion.id, reply.id)
                                   }
+                                  aria-label="Delete reply"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
